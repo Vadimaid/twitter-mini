@@ -8,11 +8,13 @@ import twitter.runner.ApplicationRunner;
 
 public class Main {
     public static void main(String[] args) {
+        final String profilePrefix = "application.profile=";
+
         String applicationProfile = "default";
         if (args.length > 0) {
             for (String arg : args) {
-                if (arg.startsWith("application.profile=")) {
-                    applicationProfile = arg.substring("application.profile=".length());
+                if (arg.startsWith(profilePrefix)) {
+                    applicationProfile = arg.substring(profilePrefix.length());
                 }
             }
         }
