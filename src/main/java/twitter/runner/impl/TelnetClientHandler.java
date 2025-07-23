@@ -1,6 +1,7 @@
 package twitter.runner.impl;
 
 import twitter.exception.ClientDisconnectedException;
+import twitter.exception.TwitterCommonException;
 import twitter.exception.UnknownCommandException;
 import twitter.factory.CommandFactory;
 import twitter.factory.CommandFactoryBuilder;
@@ -42,9 +43,12 @@ public class TelnetClientHandler implements Runnable {
                     writer.flush();
                     command = reader.readLine();
                     commandFactory.getHandler(command).handle();
+                } catch (TwitterCommonException ex) {
+                    writer.write(ex.getMessage() + "\n");
+                    System.out.println(ex.getLocalizedMessage());
                 } catch (UnknownCommandException ex) {
                     try {
-                        writer.write("Команда неопознана, проверьте список команд и попробуйте снова.");
+                        writer.write("Команда неопознана, проверьте список команд и попробуйте снова.\n");
                     } catch (IOException ex1) {
                         System.out.println(ex.getMessage());
                     }
