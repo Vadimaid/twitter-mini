@@ -1,5 +1,7 @@
 package twitter.runner.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import twitter.exception.ClientDisconnectedException;
 import twitter.exception.TwitterCommonException;
 import twitter.exception.UnknownCommandException;
@@ -16,6 +18,8 @@ import java.util.Objects;
 
 public class TelnetClientHandler implements Runnable {
 
+    private final Logger logger = LoggerFactory.getLogger(TelnetClientHandler.class);
+
     private final Socket clientSocket;
     private final CommandFactoryBuilder commandFactoryBuilder;
 
@@ -28,7 +32,7 @@ public class TelnetClientHandler implements Runnable {
     public void run() {
         String command = "";
         String clientId = clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort();
-        System.out.println("New client connected: " + clientId);
+        logger.info("New client connected: " + clientId);
         BufferedReader reader = null;
         BufferedWriter writer = null;
 
@@ -45,15 +49,15 @@ public class TelnetClientHandler implements Runnable {
                     commandFactory.getHandler(command).handle();
                 } catch (TwitterCommonException ex) {
                     writer.write(ex.getMessage() + "\n");
-                    System.out.println(ex.getLocalizedMessage());
+                    logger.error(ex.getLocalizedMessage());
                 } catch (UnknownCommandException ex) {
                     try {
                         writer.write("Команда неопознана, проверьте список команд и попробуйте снова.\n");
                     } catch (IOException ex1) {
-                        System.out.println(ex.getMessage());
+                        logger.error(ex.getMessage());
                     }
                 } catch (ClientDisconnectedException ex) {
-                    System.out.println("Client with IP " + clientId + " disconnected.");
+                    logger.warn("Client with IP " + clientId + " disconnected.");
                     return;
                 }
             }
@@ -69,7 +73,7 @@ public class TelnetClientHandler implements Runnable {
                 }
                 clientSocket.close();
             } catch (IOException ex) {
-                System.out.println(ex.getMessage());
+                logger.error(ex.getMessage());
             }
         }
 
