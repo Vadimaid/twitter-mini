@@ -1,5 +1,7 @@
 package twitter.runner.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.configuration.Value;
@@ -12,8 +14,10 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Component
+//@Component
 public class TelnetServerApplicationRunner implements ApplicationRunner {
+
+    private final Logger logger = LoggerFactory.getLogger(TelnetServerApplicationRunner.class);
 
     @Value(key = "application.port")
     private Integer port;
@@ -26,7 +30,7 @@ public class TelnetServerApplicationRunner implements ApplicationRunner {
 
     private final CommandFactoryBuilder commandFactoryBuilder;
 
-    @Injection
+//    @Injection
     public TelnetServerApplicationRunner(CommandFactoryBuilder commandFactoryBuilder) {
         this.commandFactoryBuilder = commandFactoryBuilder;
     }
@@ -37,7 +41,7 @@ public class TelnetServerApplicationRunner implements ApplicationRunner {
         new Thread(() -> {
             running = true;
             try (ServerSocket serverSocket = new ServerSocket(port)) {
-                System.out.println("Telnet server started on port " + port);
+                logger.info("Telnet server started on port " + port);
 
                 while (running) {
                     try {
@@ -46,14 +50,14 @@ public class TelnetServerApplicationRunner implements ApplicationRunner {
                         threadPool.execute(clientHandling);
                     } catch (IOException e) {
                         if (!running) {
-                            System.out.println("Server stopped.");
+                            logger.error("Server stopped.");
                             break;
                         }
-                        System.err.println("Error with client connection: " + e.getMessage());
+                        logger.error("Error with client connection: " + e.getMessage());
                     }
                 }
             } catch (IOException e) {
-                System.err.println("Error starting Telnet server: " + e.getMessage());
+                logger.error("Error starting Telnet server: " + e.getMessage());
             } finally {
                 threadPool.shutdown();
             }

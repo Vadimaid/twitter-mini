@@ -21,25 +21,25 @@ import java.util.stream.Collectors;
 
 public class ComponentFactory {
 
-    private final Map<Class<?>, Object> components;
-    private final Class<?> mainClass;
-    private final String packageName;
-    private final Environment environment;
+    private static Map<Class<?>, Object> components;
+    private static Class<?> mainClass;
+    private static String packageName;
+    private static Environment environment;
 
-    public ComponentFactory(Class<?> mainClass, Environment environment) {
-        this.components = new HashMap<>();
-        this.mainClass = mainClass;
-        this.packageName = mainClass.getPackage().getName();
-        this.environment = environment;
+    public static void use(Class<?> mClass, Environment env) {
+        components = new HashMap<>();
+        mainClass = mClass;
+        packageName = mainClass.getPackage().getName();
+        environment = env;
     }
 
-    public <T> T getComponent(Class<T> clazz) {
-        return (T) this.components.get(clazz);
+    public static <T> T getComponent(Class<T> clazz) {
+        return (T) components.get(clazz);
     }
 
-    public void configure() {
+    public static void configure() {
         try {
-            List<Class<?>> classes = this.getClasses(this.mainClass);
+            List<Class<?>> classes = getClasses(mainClass);
 
             List<ComponentDefinition<?>> componentDefinitions = new LinkedList<>();
             for (Class<?> clazz : classes) {
@@ -64,7 +64,7 @@ public class ComponentFactory {
                     if (clazz.isAnnotationPresent(Profile.class)) {
                         Profile annotation = clazz.getAnnotation(Profile.class);
                         List<String> activeProfiles = Arrays.asList(annotation.active());
-                        if (!activeProfiles.contains(this.environment.getApplicationProfile())) {
+                        if (!activeProfiles.contains(environment.getApplicationProfile())) {
                             continue;
                         }
                     }
@@ -72,7 +72,7 @@ public class ComponentFactory {
                     List<Class<?>> interfaces = List.of(clazz.getInterfaces());
                     if (!interfaces.isEmpty()) {
                         for (Class<?> interfaceClass : interfaces) {
-                            if (interfaceClass.getPackageName().startsWith(this.packageName)) {
+                            if (interfaceClass.getPackageName().startsWith(packageName)) {
                                 componentDefinitions.add(
                                         new ComponentDefinition<Constructor<?>>(
                                                 interfaceClass,
@@ -113,7 +113,7 @@ public class ComponentFactory {
             List<Class<?>> configurableClasses = new LinkedList<>();
             while (!componentDefinitions.isEmpty()) {
                 ComponentDefinition<?> componentDefinition = componentDefinitions.removeFirst();
-                this.configureComponent(componentDefinition, componentDefinitions, configurableClasses);
+                configureComponent(componentDefinition, componentDefinitions, configurableClasses);
             }
 
         } catch (Exception ex) {
@@ -123,7 +123,7 @@ public class ComponentFactory {
         }
     }
 
-    private ComponentDefinition<?> retrieveDefinitionByKeyClass(Class<?> keyClass, List<ComponentDefinition<?>> definitions) {
+    private static ComponentDefinition<?> retrieveDefinitionByKeyClass(Class<?> keyClass, List<ComponentDefinition<?>> definitions) {
         Optional<ComponentDefinition<?>> definition = definitions.stream().filter(def -> def.getKeyClass().equals(keyClass)).findFirst();
         if (definition.isEmpty()) {
             System.out.println("Не найден компонент в системе: " + keyClass.getName());
@@ -133,7 +133,7 @@ public class ComponentFactory {
         return definition.get();
     }
 
-    private <T> T convertValue(Object value, Class<T> clazz) {
+    private static <T> T convertValue(Object value, Class<T> clazz) {
         if (clazz.isInstance(value)) {
             return (T) value;
         }
@@ -150,21 +150,21 @@ public class ComponentFactory {
         };
     }
 
-    private Object createComponentInstance(ComponentDefinition<?> componentDefinition, Object... args) throws Exception{
+    private static Object createComponentInstance(ComponentDefinition<?> componentDefinition, Object... args) throws Exception{
         if (componentDefinition.getElementType().equals(ElementType.METHOD)) {
             Method method = (Method) componentDefinition.getCreateMethod();
             Object instanceToCallMethod = componentDefinition.getOriginalClass().getConstructors()[0].newInstance();
             for (Field field : componentDefinition.getOriginalClass().getDeclaredFields()) {
                 if (field.isAnnotationPresent(Value.class)) {
                     Value annotation = field.getAnnotation(Value.class);
-                    Object value = this.environment.get(annotation.key());
+                    Object value = environment.get(annotation.key());
                     if (Objects.isNull(value)) {
                         System.out.println("Ошибка при конфигурации проекта:");
                         System.out.println("Не найдено свойство " + annotation.key());
                         System.exit(1);
                     }
                     field.setAccessible(true);
-                    field.set(instanceToCallMethod, this.convertValue(value, field.getType()));
+                    field.set(instanceToCallMethod, convertValue(value, field.getType()));
                     field.setAccessible(false);
                 }
             }
@@ -176,23 +176,23 @@ public class ComponentFactory {
         for (Field field : componentDefinition.getOriginalClass().getDeclaredFields()) {
             if (field.isAnnotationPresent(Value.class)) {
                 Value annotation = field.getAnnotation(Value.class);
-                Object value = this.environment.get(annotation.key());
+                Object value = environment.get(annotation.key());
                 if (Objects.isNull(value)) {
                     System.out.println("Ошибка при конфигурации проекта:");
                     System.out.println("Не найдено свойство " + annotation.key());
                     System.exit(1);
                 }
                 field.setAccessible(true);
-                field.set(instance, this.convertValue(value, field.getType()));
+                field.set(instance, convertValue(value, field.getType()));
                 field.setAccessible(false);
             }
         }
         return instance;
     }
 
-    private void configureComponent(ComponentDefinition<?> definition, List<ComponentDefinition<?>> definitions, List<Class<?>> configurableClasses) throws Exception {
+    private static void configureComponent(ComponentDefinition<?> definition, List<ComponentDefinition<?>> definitions, List<Class<?>> configurableClasses) throws Exception {
         if (definition.getMethodArgumentTypes().isEmpty()) {
-            this.components.put(definition.getKeyClass(), this.createComponentInstance(definition));
+            components.put(definition.getKeyClass(), createComponentInstance(definition));
             return;
         }
 
@@ -205,17 +205,17 @@ public class ComponentFactory {
                 System.out.println("Цепочка зависимости: " + dependencyChain);
                 System.exit(1);
             }
-            if (!this.components.containsKey(parameterType)) {
-                ComponentDefinition<?> dependency = this.retrieveDefinitionByKeyClass(parameterType, definitions);
-                this.configureComponent(dependency, definitions, configurableClasses);
+            if (!components.containsKey(parameterType)) {
+                ComponentDefinition<?> dependency = retrieveDefinitionByKeyClass(parameterType, definitions);
+                configureComponent(dependency, definitions, configurableClasses);
             }
-            args.add(this.components.get(parameterType));
+            args.add(components.get(parameterType));
         }
-        this.components.put(definition.getKeyClass(), this.createComponentInstance(definition, args.toArray()));
+        components.put(definition.getKeyClass(), createComponentInstance(definition, args.toArray()));
         configurableClasses.remove(definition.getKeyClass());
     }
 
-    private List<Class<?>> getClasses(Class<?> mainClass) throws Exception {
+    private static List<Class<?>> getClasses(Class<?> mainClass) throws Exception {
         List<Class<?>> classes = new LinkedList<>();
         URL resource = mainClass.getResource('/' + mainClass.getName().replace('.', '/') + ".class");
         if (Objects.isNull(resource) || !"jar".equals(resource.getProtocol())) {

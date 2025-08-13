@@ -46,4 +46,14 @@ public class CustomComponentSource {
         return Persistence.createEntityManagerFactory("MiniTwitterPU", properties);
     }
 
+    @ComponentMethod
+    public AllowedEndpoints allowedEndpoints() {
+        AllowedEndpoints allowedEndpoints = new AllowedEndpoints();
+
+        allowedEndpoints.addEndpoint("/api/login");
+        allowedEndpoints.addEndpoint("/api/register");
+
+        return allowedEndpoints;
+    }
+
 }

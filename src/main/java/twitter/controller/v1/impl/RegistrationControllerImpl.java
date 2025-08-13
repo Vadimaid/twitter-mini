@@ -1,8 +1,6 @@
-package twitter.controller.impl;
+package twitter.controller.v1.impl;
 
-import twitter.configuration.Component;
-import twitter.configuration.Injection;
-import twitter.controller.RegistrationController;
+import twitter.controller.v1.RegistrationController;
 import twitter.entity.user.Organization;
 import twitter.entity.user.Person;
 import twitter.entity.user.User;
