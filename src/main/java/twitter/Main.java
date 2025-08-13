@@ -24,13 +24,13 @@ public class Main {
                 .withApplicationProfile(applicationProfile)
                 .build();
 
-        ComponentFactory factory = new ComponentFactory(Main.class, environment);
-        factory.configure();
+        ComponentFactory.use(Main.class, environment);
+        ComponentFactory.configure();
 
-        Flyway flyway = factory.getComponent(Flyway.class);
+        Flyway flyway = ComponentFactory.getComponent(Flyway.class);
         flyway.migrate();
 
-        ApplicationRunner runner = factory.getComponent(ApplicationRunner.class);
+        ApplicationRunner runner = ComponentFactory.getComponent(ApplicationRunner.class);
         runner.run();
     }
 }

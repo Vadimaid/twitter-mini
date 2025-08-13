@@ -1,6 +1,6 @@
 package twitter.mapper;
 
-import twitter.dto.PostResponseDto;
+import twitter.dto.v1.PostResponseDto;
 import twitter.entity.post.Post;
 import twitter.exception.UserNotFoundException;
 

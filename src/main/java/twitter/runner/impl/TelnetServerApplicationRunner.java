@@ -14,7 +14,7 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Component
+//@Component
 public class TelnetServerApplicationRunner implements ApplicationRunner {
 
     private final Logger logger = LoggerFactory.getLogger(TelnetServerApplicationRunner.class);
@@ -30,7 +30,7 @@ public class TelnetServerApplicationRunner implements ApplicationRunner {
 
     private final CommandFactoryBuilder commandFactoryBuilder;
 
-    @Injection
+//    @Injection
     public TelnetServerApplicationRunner(CommandFactoryBuilder commandFactoryBuilder) {
         this.commandFactoryBuilder = commandFactoryBuilder;
     }

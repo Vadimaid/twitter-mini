@@ -2,7 +2,7 @@ package twitter.mapper.impl;
 
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
-import twitter.dto.PostResponseDto;
+import twitter.dto.v1.PostResponseDto;
 import twitter.entity.post.Post;
 import twitter.entity.user.Person;
 import twitter.entity.user.User;

@@ -1,6 +1,6 @@
-package twitter.controller.impl;
+package twitter.controller.v1.impl;
 
-import twitter.controller.InfoController;
+import twitter.controller.v1.InfoController;
 import twitter.entity.user.User;
 import twitter.exception.UserNotFoundException;
 import twitter.factory.command.TwitterCommandEnum;
