@@ -40,7 +40,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
         try {
             User user = userService.getUserByLogin(request.getLogin());
-            if (!user.getPassword().equals(this.passwordEncoder.encode(request.getPassword()))) {
+            if (!this.passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                 throw new TwitterCommonException("Пароль введен неверно");
             }
 

@@ -13,7 +13,9 @@ import twitter.exception.UserNotFoundException;
 import twitter.service.UserService;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 public class InfoControllerImpl implements InfoController {
@@ -55,5 +57,30 @@ public class InfoControllerImpl implements InfoController {
         } catch (UserNotFoundException ex) {
             throw new TwitterCommonException(ex.getMessage());
         }
+    }
+
+    @Override
+    public List<InfoResponseDto> infoAll() {
+        return this.userService.getAllUsers().stream().map(user->{
+            InfoResponseDto responseDto = new InfoResponseDto();
+            responseDto.setId(user.getId());
+            responseDto.setLogin(user.getLogin());
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            if (UserType.PERSON.equals(user.getUserType())) {
+                Person person = (Person) user;
+                responseDto.setFirstName(person.getName());
+                responseDto.setLastName(person.getSurname());
+                responseDto.setDateOfBirth(person.getBirthDate().format(formatter));
+            }
+
+            if (UserType.ORGANIZATION.equals(user.getUserType())) {
+                Organization organization = (Organization) user;
+                responseDto.setTitle(organization.getTitle());
+                responseDto.setOccupation(organization.getOccupation());
+                responseDto.setDateOfFoundation(organization.getDateOfFoundation().format(formatter));
+            }
+            return responseDto;
+        }).collect(Collectors.toList());
     }
 }
