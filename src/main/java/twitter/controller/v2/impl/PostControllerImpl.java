@@ -72,4 +72,17 @@ public class PostControllerImpl implements PostController {
                 ).collect(Collectors.toList());
 
     }
+
+    @Override
+    public List<PostResponseDto> getAllPostsByLogin(String login) {
+        try {
+            User user = userService.getUserByLogin(login);
+            return postService.getAllPostsByUser(user).stream()
+                    .map(ServletPostMapper::mapEntityToDto)
+                    .collect(Collectors.toList());
+        } catch (UserNotFoundException e) {
+            throw new TwitterCommonException(e.getMessage());
+        }
+
+    }
 }

@@ -13,4 +13,6 @@ public interface PostController {
     List<PostResponseDto> getAll();
 
     List<PostResponseDto> getAllPostsByTag(String tag);
+
+    List<PostResponseDto> getAllPostsByLogin(String login);
 }
