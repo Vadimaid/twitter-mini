@@ -8,5 +8,6 @@ public interface InfoController {
 
     InfoResponseDto info(String username);
     List<InfoResponseDto> infoAll();
+    InfoResponseDto infoByLogin(String login);
 
 }

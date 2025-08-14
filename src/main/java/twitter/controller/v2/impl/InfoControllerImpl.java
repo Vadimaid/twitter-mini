@@ -4,15 +4,12 @@ import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.controller.v2.InfoController;
 import twitter.dto.v2.response.InfoResponseDto;
-import twitter.entity.user.Organization;
-import twitter.entity.user.Person;
 import twitter.entity.user.User;
-import twitter.entity.user.UserType;
 import twitter.exception.TwitterCommonException;
 import twitter.exception.UserNotFoundException;
+import twitter.mapper.ServletUserMapper;
 import twitter.service.UserService;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -34,26 +31,7 @@ public class InfoControllerImpl implements InfoController {
         }
         try {
             User user = this.userService.getUserByLogin(username);
-            InfoResponseDto responseDto = new InfoResponseDto();
-            responseDto.setId(user.getId());
-            responseDto.setLogin(user.getLogin());
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            if (UserType.PERSON.equals(user.getUserType())) {
-                Person person = (Person) user;
-                responseDto.setFirstName(person.getName());
-                responseDto.setLastName(person.getSurname());
-                responseDto.setDateOfBirth(person.getBirthDate().format(formatter));
-            }
-
-            if (UserType.ORGANIZATION.equals(user.getUserType())) {
-                Organization organization = (Organization) user;
-                responseDto.setTitle(organization.getTitle());
-                responseDto.setOccupation(organization.getOccupation());
-                responseDto.setDateOfFoundation(organization.getDateOfFoundation().format(formatter));
-            }
-
-            return responseDto;
+            return ServletUserMapper.mapEntityToDtoResponse(user);
         } catch (UserNotFoundException ex) {
             throw new TwitterCommonException(ex.getMessage());
         }
@@ -61,26 +39,21 @@ public class InfoControllerImpl implements InfoController {
 
     @Override
     public List<InfoResponseDto> infoAll() {
-        return this.userService.getAllUsers().stream().map(user->{
-            InfoResponseDto responseDto = new InfoResponseDto();
-            responseDto.setId(user.getId());
-            responseDto.setLogin(user.getLogin());
+        return this.userService.getAllUsers().stream().map(
+          ServletUserMapper::mapEntityToDtoResponse
+        ).collect(Collectors.toList());
+    }
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            if (UserType.PERSON.equals(user.getUserType())) {
-                Person person = (Person) user;
-                responseDto.setFirstName(person.getName());
-                responseDto.setLastName(person.getSurname());
-                responseDto.setDateOfBirth(person.getBirthDate().format(formatter));
-            }
-
-            if (UserType.ORGANIZATION.equals(user.getUserType())) {
-                Organization organization = (Organization) user;
-                responseDto.setTitle(organization.getTitle());
-                responseDto.setOccupation(organization.getOccupation());
-                responseDto.setDateOfFoundation(organization.getDateOfFoundation().format(formatter));
-            }
-            return responseDto;
-        }).collect(Collectors.toList());
+    @Override
+    public InfoResponseDto infoByLogin(String login) {
+        if(Objects.isNull(login) || login.isBlank()) {
+            throw new TwitterCommonException("Параметр для поиска не может быть пустым");
+        }
+        try {
+            User user = userService.getUserByLogin(login);
+            return ServletUserMapper.mapEntityToDtoResponse(user);
+        } catch (UserNotFoundException e) {
+            throw new TwitterCommonException(e.getMessage());
+        }
     }
 }
