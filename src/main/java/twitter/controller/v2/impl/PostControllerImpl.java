@@ -9,7 +9,7 @@ import twitter.entity.post.Post;
 import twitter.entity.user.User;
 import twitter.exception.TwitterCommonException;
 import twitter.exception.UserNotFoundException;
-import twitter.mapper.ServletUserMapper;
+import twitter.mapper.ServletPostMapper;
 import twitter.service.PostService;
 import twitter.service.UserService;
 
@@ -44,32 +44,15 @@ public class PostControllerImpl implements PostController {
             throw new TwitterCommonException("Автор публикации не найден в системе");
         }
         post = postService.createPost(post);
-
-        PostResponseDto postResponseDto = new PostResponseDto();
-        postResponseDto.setId(post.getId());
-
-        postResponseDto.setCreationDate(post.getCreationDate().toString());
-        postResponseDto.setTopic(post.getTopic());
-        postResponseDto.setText(post.getText());
-        postResponseDto.setTags(post.getTags());
-        postResponseDto.setAuthor(ServletUserMapper.mapEntityToDtoResponse(post.getAuthor()));
-        return postResponseDto;
+        return ServletPostMapper.mapEntityToDto(post);
     }
 
     @Override
     public List<PostResponseDto> getMyPosts(Integer id) {
         try {
             return postService.getAllPostsByUser(userService.getUserById(id)).stream()
-                    .map(post ->{
-                        PostResponseDto postResponseDto = new PostResponseDto();
-                        postResponseDto.setId(post.getId());
-                        postResponseDto.setCreationDate(post.getCreationDate().toString());
-                        postResponseDto.setTopic(post.getTopic());
-                        postResponseDto.setText(post.getText());
-                        postResponseDto.setTags(post.getTags());
-                        postResponseDto.setAuthor(ServletUserMapper.mapEntityToDtoResponse(post.getAuthor()));
-                        return postResponseDto;
-                    }).collect(Collectors.toList());
+                    .map(ServletPostMapper::mapEntityToDto
+                    ).collect(Collectors.toList());
         } catch (UserNotFoundException e) {
             throw new TwitterCommonException(e.getMessage());
         }
@@ -78,15 +61,15 @@ public class PostControllerImpl implements PostController {
     @Override
     public List<PostResponseDto> getAll() {
         return postService.getAllPosts().stream()
-                .map(post ->{
-                    PostResponseDto postResponseDto = new PostResponseDto();
-                    postResponseDto.setId(post.getId());
-                    postResponseDto.setCreationDate(post.getCreationDate().toString());
-                    postResponseDto.setTopic(post.getTopic());
-                    postResponseDto.setText(post.getText());
-                    postResponseDto.setTags(post.getTags());
-                    postResponseDto.setAuthor(ServletUserMapper.mapEntityToDtoResponse(post.getAuthor()));
-                    return postResponseDto;
-                }).collect(Collectors.toList());
+                .map(ServletPostMapper::mapEntityToDto
+                ).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PostResponseDto> getAllPostsByTag(String tag) {
+                return  postService.getAllPostsByTag(tag).stream()
+                .map(ServletPostMapper::mapEntityToDto
+                ).collect(Collectors.toList());
+
     }
 }

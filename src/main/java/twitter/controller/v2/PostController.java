@@ -1,7 +1,6 @@
 package twitter.controller.v2;
 
 import twitter.dto.v2.request.PostRequestDto;
-import twitter.dto.v2.response.InfoResponseDto;
 import twitter.dto.v2.response.PostResponseDto;
 
 import java.util.List;
@@ -12,4 +11,6 @@ public interface PostController {
     List<PostResponseDto> getMyPosts(Integer id);
 
     List<PostResponseDto> getAll();
+
+    List<PostResponseDto> getAllPostsByTag(String tag);
 }
