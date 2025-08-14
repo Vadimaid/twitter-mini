@@ -54,6 +54,7 @@ public class CustomComponentSource {
 
         allowedEndpoints.addEndpoint("/api/login");
         allowedEndpoints.addEndpoint("/api/register");
+        allowedEndpoints.addEndpoint("/api/help");
 
         return allowedEndpoints;
     }
