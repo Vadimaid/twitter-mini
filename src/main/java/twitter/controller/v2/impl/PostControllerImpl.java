@@ -8,6 +8,7 @@ import twitter.dto.v2.response.PostResponseDto;
 import twitter.entity.post.Post;
 import twitter.entity.user.User;
 import twitter.exception.TwitterCommonException;
+import twitter.exception.UnknownUserTypeException;
 import twitter.exception.UserNotFoundException;
 import twitter.mapper.ServletPostMapper;
 import twitter.service.PostService;
@@ -84,5 +85,16 @@ public class PostControllerImpl implements PostController {
             throw new TwitterCommonException(e.getMessage());
         }
 
+    }
+
+    @Override
+    public List<PostResponseDto> getAllPostsByUserType(Integer userType) {
+        try {
+            return postService.getAllPostsByUserType(userType).stream()
+                    .map(ServletPostMapper::mapEntityToDto)
+                    .collect(Collectors.toList());
+        } catch (UnknownUserTypeException e) {
+            throw new TwitterCommonException(e.getMessage());
+        }
     }
 }

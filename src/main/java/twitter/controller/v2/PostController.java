@@ -15,4 +15,6 @@ public interface PostController {
     List<PostResponseDto> getAllPostsByTag(String tag);
 
     List<PostResponseDto> getAllPostsByLogin(String login);
+
+    List<PostResponseDto> getAllPostsByUserType(Integer userType);
 }
