@@ -77,4 +77,10 @@ public class PostControllerImpl implements PostController {
         Post post = postService.addLike(postId, username);
         return ServletPostMapper.mapEntityToDto(post);
     }
+
+    @Override
+    public PostResponseDto getPostById(Integer postId) {
+        Post post = postService.getById(postId);
+        return ServletPostMapper.mapEntityToDto(post);
+    }
 }
