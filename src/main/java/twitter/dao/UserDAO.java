@@ -18,4 +18,5 @@ public interface UserDAO {
 
     List<User> getAllUsersByUserType(int userType) throws UnknownUserTypeException;
 
+    User updateUser(User user);
 }

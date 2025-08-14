@@ -13,4 +13,6 @@ public interface PostDAO {
     List<Post> getAllPostsByTag(String tag);
     List<Post> getAllPostsByUserIdIn(int[] userIds);
 
+    Post getPostById(Integer postId);
+    Post addLike(Integer postId, Integer userId);
 }

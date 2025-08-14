@@ -3,12 +3,16 @@ package twitter.service.impl;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.dao.PostDAO;
+import twitter.dto.v2.request.PostRequestDto;
 import twitter.entity.post.Post;
 import twitter.entity.user.User;
+import twitter.exception.TwitterCommonException;
 import twitter.exception.UnknownUserTypeException;
+import twitter.exception.UserNotFoundException;
 import twitter.service.PostService;
 import twitter.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,6 +48,26 @@ public class PostServiceImpl implements PostService {
         }
 
         return result;
+    }
+
+    @Override
+    public List<Post> getAllPostsByUser(String username) {
+        try {
+            User user = userService.getUserByLogin(username);
+            return getAllPostsByUser(user);
+        } catch (UserNotFoundException e) {
+            throw new TwitterCommonException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Post> getAllPostsByUser(Integer userId) {
+        try {
+            User user = userService.getUserById(userId);
+            return getAllPostsByUser(user);
+        } catch (UserNotFoundException e) {
+            throw new TwitterCommonException(e.getMessage());
+        }
     }
 
     @Override
@@ -83,4 +107,40 @@ public class PostServiceImpl implements PostService {
 
         return posts;
     }
+
+    @Override
+    public Post getById(Integer postId) {
+        return postDAO.getPostById(postId);
+    }
+
+    @Override
+    public Post addLike(Integer postId, String username) {
+
+
+        try {
+            return  postDAO.addLike( postId, userService.getUserByLogin(username).getId());
+        } catch (UserNotFoundException e) {
+            throw new TwitterCommonException(e.getMessage());
+        }
+
+    }
+
+    @Override
+    public Post createPost(PostRequestDto postRequestDto) {
+        Post post = new Post();
+        post.setTopic(postRequestDto.getTopic());
+        post.setText(postRequestDto.getText());
+        String[] tagArray = postRequestDto.getTags().split(",");
+        post.setTags(tagArray);
+        post.setCreationDate(LocalDateTime.now());
+        try {
+            User author = userService.getUserByLogin(postRequestDto.getAuthor());
+            post.setAuthor(author);
+        } catch (UserNotFoundException e) {
+            throw new TwitterCommonException("Автор публикации не найден в системе");
+        }
+        return createPost(post);
+    }
+
+
 }

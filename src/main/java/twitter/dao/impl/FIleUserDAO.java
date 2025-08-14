@@ -119,4 +119,9 @@ public class FIleUserDAO implements UserDAO {
                 .filter(user -> type.equals(user.getUserType()))
                 .toList();
     }
+
+    @Override
+    public User updateUser(User user) {
+        throw new UnsupportedOperationException("Данная операция не реализованна");
+    }
 }

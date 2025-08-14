@@ -21,5 +21,6 @@ public interface UserService {
     List<User> getUsersByType(int userType) throws UnknownUserTypeException;
 
     List<User> createSeveralUsers(List<User> users);
-    
+
+    User updateUser(User user);
 }

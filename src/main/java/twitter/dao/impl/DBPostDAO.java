@@ -8,9 +8,9 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
-import twitter.configuration.Value;
 import twitter.dao.PostDAO;
 import twitter.entity.post.Post;
+import twitter.entity.user.User;
 import twitter.exception.TwitterCommonException;
 
 import java.time.LocalDateTime;
@@ -101,4 +101,42 @@ public class DBPostDAO implements PostDAO {
             throw new TwitterCommonException(ex.getMessage());
         }
     }
+
+    @Override
+    public Post getPostById(Integer postId) {
+        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            return entityManager
+                    .createQuery("select p from Post p where p.id in (:ids)", Post.class)
+                    .setParameter("ids", postId)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            throw new TwitterCommonException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Post addLike(Integer postId, Integer userId) {
+        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            try {
+                entityManager.getTransaction().begin();
+
+                User user =  entityManager.find(User.class, userId);
+                Post post = entityManager.find(Post.class, postId);
+
+                if (user != null && post != null) {
+                    user.getPostsILike().add(post);
+
+                    entityManager.merge(user);
+                }
+
+                entityManager.getTransaction().commit();
+                return post;
+            } catch (Exception ex) {
+                entityManager.getTransaction().rollback();
+                throw new TwitterCommonException(ex.getMessage());
+            }
+        }
+    }
+
+
 }

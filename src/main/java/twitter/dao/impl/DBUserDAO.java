@@ -5,7 +5,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NoResultException;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
-import twitter.configuration.Value;
 import twitter.dao.UserDAO;
 import twitter.entity.user.User;
 import twitter.entity.user.UserType;
@@ -87,6 +86,21 @@ public class DBUserDAO implements UserDAO {
                     .getResultList();
         } catch (Exception ex) {
             throw new TwitterCommonException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public User updateUser(User user) {
+        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            try {
+                entityManager.getTransaction().begin();
+                entityManager.merge(user);
+                entityManager.getTransaction().commit();
+                return user;
+            } catch (Exception ex) {
+                entityManager.getTransaction().rollback();
+                throw new TwitterCommonException(ex.getMessage());
+            }
         }
     }
 }

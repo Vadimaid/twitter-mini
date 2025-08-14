@@ -17,4 +17,6 @@ public interface PostController {
     List<PostResponseDto> getAllPostsByLogin(String login);
 
     List<PostResponseDto> getAllPostsByUserType(Integer userType);
+
+    PostResponseDto addLike(Integer postId, String username);
 }
