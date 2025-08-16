@@ -12,14 +12,14 @@ import lombok.Setter;
 public class InfoResponseDto  {
 
     private Integer id;
-    private String login;
+    private String  login;
 
-    private String firstName;
-    private String lastName;
-    private String dateOfBirth;
+    private String  firstName;
+    private String  lastName;
+    private String  dateOfBirth;
 
-    private String title;
-    private String occupation;
-    private String dateOfFoundation;
+    private String  title;
+    private String  occupation;
+    private String  dateOfFoundation;
 
 }

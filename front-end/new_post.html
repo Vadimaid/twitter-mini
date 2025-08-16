@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создать публикацию</title>
+    <!-- Используем Tailwind CSS через CDN для стилизацию -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Дополнительные стили для кастомизации и адаптивности */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #1f1f1f;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .form-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1da1f2;
+            text-align: center;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .form-input, .form-textarea {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+            outline: none;
+            transition: border-color 0.2s;
+            resize: vertical;
+        }
+        .form-input:focus, .form-textarea:focus {
+            border-color: #1da1f2;
+        }
+        .form-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #1da1f2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            width: 100%;
+        }
+        .form-button:hover {
+            background-color: #1786c4;
+        }
+        .cancel-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #555;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            width: 100%;
+        }
+        .cancel-button:hover {
+            background-color: #777;
+        }
+        .info-message {
+            font-size: 0.9rem;
+            color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="form-title">Создать публикацию</h1>
+        <form id="createPostForm">
+            <div class="form-group">
+                <label for="topic">Заголовок:</label>
+                <input type="text" id="topic" name="topic" class="form-input" required>
+            </div>
+            <div class="form-group mt-4">
+                <label for="text">Текст:</label>
+                <textarea id="text" name="text" rows="8" class="form-textarea" required></textarea>
+            </div>
+            <div class="form-group mt-4">
+                <label for="tags">Теги:</label>
+                <input type="text" id="tags" name="tags" class="form-input" placeholder="Теги, разделенные запятыми (например: tech, news, review)">
+            </div>
+            <div class="flex gap-4 mt-6">
+                <button type="button" class="cancel-button" onclick="goToDashboard()">Отменить</button>
+                <button type="submit" class="form-button">Опубликовать</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                window.location.href = './index.html';
+                return;
+            }
+        });
+
+        const createPostForm = document.getElementById('createPostForm');
+
+        // Функция для отмены и возврата на дашборд
+        window.goToDashboard = () => {
+            window.location.href = './dashboard.html';
+        };
+
+        createPostForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const topic = document.getElementById('topic').value;
+            const text = document.getElementById('text').value;
+            const tags = document.getElementById('tags').value;
+
+            const payload = {
+                topic: topic,
+                text: text,
+                tags: tags
+            };
+
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                alert('Ошибка: Токен авторизации не найден. Пожалуйста, войдите в систему.');
+                window.location.href = './index.html';
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/add_post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert('Публикация успешно создана!');
+                    window.location.href = 'dashboard.html';
+                } else {
+                    const errorText = await response.text();
+                    alert('Ошибка публикации: ' + errorText);
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке запроса:', error);
+                alert('Не удалось подключиться к серверу. Пожалуйста, попробуйте позже.');
+            }
+        });
+    </script>
+</body>
+</html>

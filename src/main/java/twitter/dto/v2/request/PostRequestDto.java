@@ -13,3 +13,4 @@ public class PostRequestDto {
     private String tags;
     private String author;
 }
+

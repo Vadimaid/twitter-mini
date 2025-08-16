@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
+    <!-- Используем Tailwind CSS через CDN для стилизации -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Дополнительные стили для кастомизации и адаптивности */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #1f1f1f;
+            border-bottom: 2px solid #333;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1da1f2;
+        }
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        .form-button {
+            padding: 0.5rem 1rem;
+            background-color: #1da1f2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+        .form-button:hover {
+            background-color: #1786c4;
+        }
+        .search-container {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: #1f1f1f;
+            border-radius: 12px;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .search-input {
+            flex-grow: 1;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+            outline: none;
+        }
+        .search-select {
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+            outline: none;
+        }
+        .content-container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 2rem;
+        }
+        .post-feed, .my-posts-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .my-posts-container {
+            background-color: #1f1f1f;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .post-card {
+            background-color: #1f1f1f;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .post-author {
+            font-weight: 600;
+            color: #1da1f2;
+        }
+        .post-date {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .post-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+        }
+        .post-tags {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        .post-likes {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            font-size: 0.9rem;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .user-info-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .user-info-modal-content {
+            background-color: #1f1f1f;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+        }
+        .user-info-modal-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1da1f2;
+            text-align: center;
+        }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: #2a2a2a;
+            border-radius: 8px;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #bbb;
+        }
+        .info-value {
+            color: #fff;
+        }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: #aaa;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-button:hover {
+            color: #fff;
+        }
+        @media (max-width: 768px) {
+            .content-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Личный кабинет</h1>
+    <div class="header-buttons">
+        <button class="form-button" onclick="goToCreatePost()">Создать пост</button>
+        <button class="form-button" onclick="showUserInfo()">Моя информация</button>
+        <button class="form-button" onclick="logout()">Выйти</button>
+    </div>
+</div>
+
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Поиск публикаций..." class="search-input">
+    <select id="searchType" class="search-select">
+        <option value="all">Все</option>
+        <option value="tag">По тегу</option>
+        <option value="author">По автору</option>
+    </select>
+    <button class="form-button" onclick="searchPosts()">Найти</button>
+</div>
+
+<div class="content-container">
+    <div>
+        <h2 class="text-2xl font-bold mb-4">Все публикации</h2>
+        <div class="post-feed" id="postFeed">
+            <p class="text-center text-gray-500">Загрузка публикаций...</p>
+        </div>
+    </div>
+    <div class="my-posts-container">
+        <h2 class="text-2xl font-bold mb-4">Мои публикации</h2>
+        <div class="my-posts-feed" id="myPostsFeed">
+            <p class="text-center text-gray-500">Загрузка ваших публикаций...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для отображения информации о пользователе -->
+<div id="userInfoModal" class="user-info-modal">
+    <div class="user-info-modal-content">
+        <span class="close-button" onclick="closeUserInfo()">&times;</span>
+        <h1>Моя информация</h1>
+        <div id="userInfoSection" class="flex flex-col gap-4">
+            <!-- Здесь будет отображаться информация о пользователе -->
+            <p class="text-center text-gray-500">Загрузка информации...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            window.location.href = './index.html';
+            return;
+        }
+
+        const postFeed = document.getElementById('postFeed');
+        const myPostsFeed = document.getElementById('myPostsFeed');
+
+        const renderPosts = (container, posts) => {
+            container.innerHTML = '';
+            if (!posts || posts.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500">Публикации не найдены.</p>';
+                return;
+            }
+            posts.forEach(post => {
+                const postCard = document.createElement('div');
+                postCard.className = 'post-card';
+                const postTags = post.tags ? post.tags.map(tag => `#${tag}`).join(' ') : '';
+                const likeCount = post.usersWhoLiked ? post.usersWhoLiked.length : 0;
+                const creationDate = new Date(post.creationDate).toLocaleString();
+                postCard.innerHTML = `
+                    <div class="post-header">
+                        <span class="post-author">${post.author.login}</span>
+                        <span class="post-date">${creationDate}</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">${post.topic}</h3>
+                    <p class="post-text">${post.text}</p>
+                    <p class="post-tags">Теги: ${postTags}</p>
+                    <span class="post-likes">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                        </svg>
+                        ${likeCount}
+                    </span>
+                `;
+                container.appendChild(postCard);
+            });
+        };
+        const fetchAllPosts = async () => {
+            const token = localStorage.getItem('jwtToken');
+            postFeed.innerHTML = '<p class="text-center text-gray-500">Загрузка всех публикаций...</p>';
+            try {
+                const response = await fetch('http://localhost:8080/api/all_posts', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`Ошибка HTTP: ${response.status}`);
+                }
+                const posts = await response.json();
+                renderPosts(postFeed, posts);
+            } catch (error) {
+                console.error('Ошибка при получении всех постов:', error);
+                alert('Ошибка при получении всех постов:', error);
+                postFeed.innerHTML = '<p class="text-center text-red-500">Не удалось загрузить публикации. Пожалуйста, убедитесь, что сервер запущен и правильно настроен для CORS.</p>';
+            }
+        };
+        const fetchMyPosts = async () => {
+            const token = localStorage.getItem('jwtToken');
+            myPostsFeed.innerHTML = '<p class="text-center text-gray-500">Загрузка ваших публикаций...</p>';
+            try {
+                const response = await fetch('http://localhost:8080/api/my_posts', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`Ошибка HTTP: ${response.status}`);
+                }
+                const posts = await response.json();
+                renderPosts(myPostsFeed, posts);
+            } catch (error) {
+                console.error('Ошибка при получении моих постов:', error);
+                alert('Ошибка при получении моих постов:', error);
+                myPostsFeed.innerHTML = '<p class="text-center text-red-500">Не удалось загрузить ваши публикации. Пожалуйста, убедитесь, что сервер запущен и правильно настроен для CORS.</p>';
+            }
+        };
+        window.searchPosts = async () => {
+            const query = document.getElementById('searchInput').value.trim();
+            const searchType = document.getElementById('searchType').value;
+            let apiUrl = 'http://localhost:8080/api/all_posts';
+            if (query) {
+                switch(searchType) {
+                    case 'tag':
+                        apiUrl = `http://localhost:8080/api/posts_by_tag?tag=${encodeURIComponent(query)}`;
+                        break;
+                    case 'author':
+                        apiUrl = `http://localhost:8080/api/posts_by_login?login=${encodeURIComponent(query)}`;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            postFeed.innerHTML = '<p class="text-center text-gray-500">Поиск публикаций...</p>';
+            const token = localStorage.getItem('jwtToken');
+            try {
+                const response = await fetch(apiUrl, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`Ошибка HTTP: ${response.status}`);
+                }
+                const posts = await response.json();
+                renderPosts(postFeed, posts);
+            } catch (error) {
+                console.error('Ошибка при поиске постов:', error);
+                alert('Ошибка при поиске постов:', error);
+                postFeed.innerHTML = '<p class="text-center text-red-500">Ошибка поиска. Пожалуйста, убедитесь, что сервер работает и правильно настроен для CORS.</p>';
+            }
+        };
+        window.goToCreatePost = () => {
+            window.location.href = './new_post.html';
+        };
+        window.showUserInfo = async () => {
+            const userInfoModal = document.getElementById('userInfoModal');
+            const userInfoSection = document.getElementById('userInfoSection');
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                userInfoSection.innerHTML = `<p class="text-red-500">Токен не найден. Пожалуйста, войдите в систему.</p>`;
+                userInfoModal.style.display = 'flex';
+                return;
+            }
+            userInfoSection.innerHTML = `<p class="text-gray-500">Загрузка информации...</p>`;
+            userInfoModal.style.display = 'flex';
+            try {
+                const response = await fetch('http://localhost:8080/api/info', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`Ошибка HTTP: ${response.status}`);
+                }
+                const userData = await response.json();
+                
+                // Функция для создания элемента info-item
+                const createInfoItem = (label, value) => {
+                    if (value) {
+                        return `
+                            <div class="info-item">
+                                <span class="info-label">${label}:</span>
+                                <span class="info-value">${value}</span>
+                            </div>
+                        `;
+                    }
+                    return ''; // Возвращаем пустую строку, если значение отсутствует
+                };
+
+                let userInfoHTML = '';
+                
+                // Проверка, является ли пользователь физическим лицом
+                if (userData.firstName) {
+                    userInfoHTML += createInfoItem('Логин', userData.login);
+                    userInfoHTML += createInfoItem('Имя', userData.firstName);
+                    userInfoHTML += createInfoItem('Фамилия', userData.lastName);
+                    userInfoHTML += createInfoItem('Дата рождения', userData.dateOfBirth);
+                }
+                // Проверка, является ли пользователь организацией
+                else if (userData.title) {
+                    userInfoHTML += createInfoItem('Логин', userData.login);
+                    userInfoHTML += createInfoItem('Название', userData.title);
+                    userInfoHTML += createInfoItem('Род деятельности', userData.occupation);
+                    userInfoHTML += createInfoItem('Дата основания', userData.dateOfFoundation);
+                } else {
+                    // Если ни один из типов не совпадает, показываем только логин и дату регистрации
+                    userInfoHTML += createInfoItem('Логин', userData.login);
+                }
+
+                // Добавляем дату регистрации, которая должна быть всегда
+                userInfoHTML += createInfoItem('Дата регистрации', new Date(userData.creationDate).toLocaleDateString());
+
+                userInfoSection.innerHTML = userInfoHTML;
+
+            } catch (error) {
+                console.error('Ошибка при получении информации о пользователе:', error);
+                  alert('Ошибка при получении информации о пользователе:', error);
+                userInfoSection.innerHTML = `<p class="text-red-500">Не удалось загрузить информацию. Пожалуйста, убедитесь, что сервер запущен и правильно настроен для CORS.</p>`;
+            }
+        };
+        window.closeUserInfo = () => {
+            document.getElementById('userInfoModal').style.display = 'none';
+        };
+        window.logout = () => {
+            localStorage.removeItem('jwtToken');
+            window.location.href = './index.html';
+        };
+        fetchAllPosts();
+        fetchMyPosts();
+    });
+</script>
+</body>
+</html>

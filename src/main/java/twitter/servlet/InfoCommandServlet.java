@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import twitter.configuration.ComponentFactory;
 import twitter.controller.v2.InfoController;
 import twitter.dto.v2.response.InfoResponseDto;
@@ -18,7 +19,9 @@ public class InfoCommandServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String authorization = req.getHeader("Authorization");
-        String token = authorization.substring(7);
+
+         authorization = req.getHeader("Authorization");
+         String token = authorization.substring(7);
 
         JwtHandler jwtHandler = ComponentFactory.getComponent(JwtHandler.class);
         ObjectMapper mapper = new ObjectMapper();

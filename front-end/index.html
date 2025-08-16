@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мини-Твиттер</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            background-color: #1f1f1f;
+            border-bottom: 2px solid #333;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1da1f2;
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-start;
+            padding: 1rem;
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            max-width: 250px;
+        }
+        .login-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .form-input {
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+            transition: all 0.2s ease-in-out;
+            outline: none;
+            width: 100%;
+        }
+        .form-input:focus {
+            border-color: #1da1f2;
+            box-shadow: 0 0 0 2px rgba(29, 161, 242, 0.5);
+        }
+        .form-button {
+            padding: 0.5rem 1rem;
+            background-color: #1da1f2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+        .form-button:hover {
+            background-color: #1786c4;
+        }
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .post-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .post-card {
+            background-color: #1f1f1f;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease-in-out;
+            position: relative;
+        }
+        .post-card:hover {
+            transform: translateY(-5px);
+        }
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .post-author {
+            font-weight: 600;
+            color: #1da1f2;
+        }
+        .post-date {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .post-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+        }
+        .post-tags {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        .post-likes {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            font-size: 0.9rem;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="header-top">
+        <h1>Мини-Твиттер</h1>
+        <form class="login-form" id="loginForm">
+            <h2 class="text-lg font-bold text-white mb-2">Авторизация</h2>
+            <input type="text" id="loginUsername" placeholder="Логин" class="form-input">
+            <input type="password" id="loginPassword" placeholder="Пароль" class="form-input">
+            <div class="login-buttons">
+                <button type="submit" class="form-button">Войти</button>
+                <a href="./register.html" class="form-button">Регистрация</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="main-container">
+    <h2 class="text-2xl font-bold mb-4">Лента публикаций</h2>
+    <div class="post-feed" id="postFeed">
+        <!-- Здесь будут отображаться посты -->
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const postFeed = document.getElementById('postFeed');
+        const loginForm = document.getElementById('loginForm');
+        const loginUsernameInput = document.getElementById('loginUsername');
+        const loginPasswordInput = document.getElementById('loginPassword');
+
+        // Функция для отрисовки постов
+        const renderPosts = (posts) => {
+            postFeed.innerHTML = ''; // Очищаем ленту
+            if (!posts || posts.length === 0) {
+                postFeed.innerHTML = '<p class="text-center text-gray-500">Публикации не найдены.</p>';
+                return;
+            }
+            posts.forEach(post => {
+                const postCard = document.createElement('div');
+                postCard.className = 'post-card';
+
+                const postTags = post.tags ? post.tags.map(tag => `#${tag}`).join(' ') : '';
+                const likeCount = post.usersWhoLiked ? post.usersWhoLiked.length : 0;
+
+                postCard.innerHTML = `
+                        <div class="post-header">
+                            <span class="post-author">${post.author.login}</span>
+                            <span class="post-date">${post.creationDate}</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">${post.topic}</h3>
+                        <p class="post-text">${post.text}</p>
+                        <p class="post-tags">Теги: ${postTags}</p>
+                        <span class="post-likes">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                            </svg>
+                            ${likeCount}
+                        </span>
+                    `;
+                postFeed.appendChild(postCard);
+            });
+        };
+
+        // Функция для получения постов с бэкенда
+        const fetchPosts = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/api/all_posts');
+                if (!response.ok) {
+                    throw new Error(`Ошибка HTTP: ${response.status}`);
+                }
+                const posts = await response.json();
+                renderPosts(posts);
+            } catch (error) {
+                console.error('Ошибка при получении постов:', error);
+                alert('Ошибка при получении постов:', error);
+                postFeed.innerHTML = '<p class="text-center text-red-500">Не удалось загрузить публикации.</p>';
+            }
+        };
+
+        // Обработчик события отправки формы авторизации
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Предотвращаем стандартную отправку формы
+
+            const login = loginUsernameInput.value;
+            const password = loginPasswordInput.value;
+
+            if (!login || !password) {
+                console.error("Пожалуйста, заполните все поля.");
+                alert("Пожалуйста, заполните все поля.");
+                return;
+            }
+
+            const loginData = {
+                login: login,
+                password: password
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const token = data.token;
+                    console.log('Авторизация успешна. Токен:', token);
+                    alert('Авторизация успешна. Токен:', token);
+                    // Сохраняем токен в localStorage
+                    localStorage.setItem('jwtToken', token);
+
+                    // Перенаправляем пользователя на страницу личного кабинета
+                    window.location.href = './dashboard.html';
+                } else {
+                    console.error('Ошибка авторизации:', response.status);
+                    alert('Ошибка авторизации:', response.status);
+                    const errorData = await response.text();
+                    console.error('Сообщение об ошибке:', errorData);
+                    alert('Сообщение об ошибке:', errorData);
+                }
+            } catch (error) {
+                console.error('Ошибка сети:', error);
+                alert('Ошибка сети:', error);
+            }
+        });
+
+        // Загружаем посты при загрузке страницы
+        fetchPosts();
+    });
+</script>
+</body>
+</html>

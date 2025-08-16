@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <!-- Используем Tailwind CSS через CDN для стилизации -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Дополнительные стили для кастомизации и адаптивности */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #1f1f1f;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+        }
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1da1f2;
+            text-align: center;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .form-input, .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus, .form-select:focus {
+            border-color: #1da1f2;
+        }
+        .form-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #1da1f2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            width: 100%;
+        }
+        .form-button:hover {
+            background-color: #1786c4;
+        }
+        .info-message {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #bbb;
+        }
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <h1 class="form-title">Регистрация</h1>
+            <p class="info-message">Выберите тип пользователя для регистрации</p>
+            <div class="radio-group">
+                <label class="flex items-center gap-2">
+                    <input type="radio" name="userType" value="0" checked>
+                    <span>Физическое лицо</span>
+                </label>
+                <label class="flex items-center gap-2">
+                    <input type="radio" name="userType" value="1">
+                    <span>Организация</span>
+                </label>
+            </div>
+            
+            <form id="registrationForm">
+                <!-- Общие поля для всех типов пользователей -->
+                <div class="form-group">
+                    <label for="login">Логин:</label>
+                    <input type="text" id="login" name="login" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Пароль:</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                </div>
+
+                <!-- Поля для физического лица -->
+                <div id="personFields" class="flex flex-col gap-4 mt-4">
+                    <div class="form-group">
+                        <label for="firstName">Имя:</label>
+                        <input type="text" id="firstName" name="firstName" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Фамилия:</label>
+                        <input type="text" id="lastName" name="lastName" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="dateOfBirth">Дата рождения:</label>
+                        <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-input">
+                    </div>
+                </div>
+
+                <!-- Поля для организации (по умолчанию скрыты) -->
+                <div id="orgFields" class="hidden flex-col gap-4 mt-4">
+                    <div class="form-group">
+                        <label for="title">Название:</label>
+                        <input type="text" id="title" name="title" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="occupation">Род деятельности:</label>
+                        <input type="text" id="occupation" name="occupation" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="dateOfFoundation">Дата основания:</label>
+                        <input type="date" id="dateOfFoundation" name="dateOfFoundation" class="form-input">
+                    </div>
+                </div>
+                
+                <button type="submit" class="form-button mt-6">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const userTypeRadios = document.getElementsByName('userType');
+        const personFields = document.getElementById('personFields');
+        const orgFields = document.getElementById('orgFields');
+        const registrationForm = document.getElementById('registrationForm');
+
+        // Функция для переключения полей
+        const toggleFields = () => {
+            if (userTypeRadios[0].checked) {
+                personFields.classList.remove('hidden');
+                orgFields.classList.add('hidden');
+                // Очищаем поля организации, чтобы они не попали в JSON
+                document.getElementById('title').value = '';
+                document.getElementById('occupation').value = '';
+                document.getElementById('dateOfFoundation').value = '';
+            } else {
+                personFields.classList.add('hidden');
+                orgFields.classList.remove('hidden');
+                // Очищаем поля человека
+                document.getElementById('firstName').value = '';
+                document.getElementById('lastName').value = '';
+                document.getElementById('dateOfBirth').value = '';
+            }
+        };
+
+        // Добавляем обработчики событий для радио-кнопок
+        userTypeRadios.forEach(radio => {
+            radio.addEventListener('change', toggleFields);
+        });
+
+        // Изначально вызываем функцию, чтобы показать правильные поля при загрузке
+        toggleFields();
+
+        // Обработчик отправки формы
+        registrationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const login = document.getElementById('login').value;
+            const password = document.getElementById('password').value;
+            const userType = parseInt(document.querySelector('input[name="userType"]:checked').value);
+
+            let payload = {
+                userType: userType,
+                login: login,
+                password: password
+            };
+
+            if (userType === 0) {
+                // Добавляем поля для физического лица
+                payload.firstName = document.getElementById('firstName').value;
+                payload.lastName = document.getElementById('lastName').value;
+                payload.dateOfBirth = document.getElementById('dateOfBirth').value;
+                // Заполняем остальные поля пустыми значениями для соответствия формату
+                payload.title = null;
+                payload.occupation = null;
+                payload.dateOfFoundation = null;
+            } else {
+                // Добавляем поля для организации
+                payload.title = document.getElementById('title').value;
+                payload.occupation = document.getElementById('occupation').value;
+                payload.dateOfFoundation = document.getElementById('dateOfFoundation').value;
+                // Заполняем остальные поля пустыми значениями
+                payload.firstName = null;
+                payload.lastName = null;
+                payload.dateOfBirth = null;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8080/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert('Регистрация прошла успешно!');
+                    window.location.href = 'index.html';
+                } else {
+                    const errorText = await response.text();
+                    alert('Ошибка регистрации: ' + errorText);
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке запроса:', error);
+                alert('Не удалось подключиться к серверу. Пожалуйста, попробуйте позже.');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import twitter.configuration.ComponentFactory;
 import twitter.controller.v2.InfoController;
 import twitter.dto.v2.response.InfoResponseDto;

@@ -22,3 +22,31 @@ public class RegisterRequestDto {
     private String dateOfFoundation;
 
 }
+
+
+/*
+
+{
+     "userType": 0
+     "login": "userlogin123"
+     "password": "qwerty123"
+     "firstName": "alexander"
+     "lastName": "solo"
+     "dateOfBirth": "1990-11-26"
+     "title":
+     "occupation":
+     "dateOfFoundation":
+}
+
+{
+     "userType": 1
+     "login": "userlogin123"
+     "password": "qwerty123"
+     "firstName":
+     "lastName":
+     "dateOfBirth":
+     "title": "nooborak"
+     "occupation": "gaming"
+     "dateOfFoundation": "2018-12-09"
+}
+ */
