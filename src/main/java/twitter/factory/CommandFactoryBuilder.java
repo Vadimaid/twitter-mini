@@ -10,7 +10,7 @@ import twitter.controller.v1.impl.InfoControllerImpl;
 import twitter.controller.v1.impl.PostControllerImpl;
 import twitter.controller.v1.impl.RegistrationControllerImpl;
 import twitter.factory.command.CommandFactoryImpl;
-import twitter.mapper.PostMapper;
+import twitter.mapper.v1.PostMapper;
 import twitter.security.SecurityComponent;
 import twitter.service.FileUploadService;
 import twitter.service.PostService;
