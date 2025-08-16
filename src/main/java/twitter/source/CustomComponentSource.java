@@ -3,6 +3,8 @@ package twitter.source;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.flywaydb.core.Flyway;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import twitter.configuration.ComponentMethod;
 import twitter.configuration.ComponentSource;
 import twitter.configuration.Value;
@@ -52,8 +54,20 @@ public class CustomComponentSource {
 
         allowedEndpoints.addEndpoint("/api/login");
         allowedEndpoints.addEndpoint("/api/register");
+<<<<<<< HEAD
+=======
+        allowedEndpoints.addEndpoint("/api/help");
+>>>>>>> 6fafb11864ac6f8f4c15f331b0a7ed3bf9506cc8
 
         return allowedEndpoints;
     }
 
+<<<<<<< HEAD
+=======
+    @ComponentMethod
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(4);
+    }
+
+>>>>>>> 6fafb11864ac6f8f4c15f331b0a7ed3bf9506cc8
 }

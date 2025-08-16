@@ -1,0 +1,66 @@
+openapi: 3.0.3
+info:
+  title: Mini Twitter API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /auth/login:
+    post:
+      summary: Команда login
+      description: Эндпоинт для входа в систему
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequestDto'
+      responses:
+        '200':
+          description: Логин прошел успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponseDto'
+        '400':
+          description: Ошибки в запросе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Непредвиденные ошибки на стороне сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+components:
+  schemas:
+    LoginRequestDto:
+      type: object
+      description: Объект для передачи логина и пароля пользователя
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          example: vadim
+          description: Логин пользователя
+        password:
+          type: string
+          format: password
+          example: Secret123
+          description: Пароль пользователя
+    LoginResponseDto:
+      type: object
+      description: Объект содержащий JWT для пользователя
+      properties:
+        token:
+          type: string
+          description: Токен для использования в header "Authorization"
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    ErrorMessage:
+      description: Текст ошибки
+      type: string
+      example: "Пароль введен неверно"
