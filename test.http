@@ -1,0 +1,43 @@
+###
+POST http://localhost:8080/api/register
+Content-Type: application/json; charset=UTF-8
+
+
+
+
+{
+  "userType" : "0",
+  "login" : "aktan",
+  "password" : "12345",
+  "firstName" : "Aktan",
+  "lastName" : "Ishenbekov",
+  "dateOfBirth" : "2007-05-24"
+
+
+}
+
+###
+POST http://localhost:8080/api/login
+Content-Type: application/json; charset=UTF-8
+
+
+{
+  "login" : "aktan",
+  "password" : "12345"
+}
+
+###
+POST http://localhost:8080/api/addPost
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NTUzNzMyMDAsImV4cCI6MTc1NTM3MzgwMCwic3ViIjoiYWt0YW4ifQ.mQlUVEJ6DX7uN-fUfB8IiOyYIrAM7YFHvCuKu1bJFLE
+
+
+
+{
+  "topic" : "Java",
+  "text" : "I hate Java",
+  "tags" : "love"
+
+}
+
+

@@ -1,0 +1,84 @@
+openapi: 3.0.3
+info:
+  title: MIni Twitter
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api
+
+paths:
+  /posts:
+    post:
+      summary: addPost
+      description: Эндпоинт для создания поста
+      tags:
+        - Posts
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddPostRequest'
+      responses:
+        '201':
+          description: Пост успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Неверные данные запроса
+        '401':
+          description: Неавторизован (отсутствует или неверный токен)
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    AddPostRequest:
+      type: object
+      properties:
+        topic:
+          type: string
+          example: "Публикация"
+        text:
+          type: string
+          example: "Моя первая публикация"
+        tags:
+          type: string
+          example: "java"
+      required:
+        - title
+        - content
+        - tags
+
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+
+        author:
+          type: string
+          example: "aisanat"
+
+        topic:
+          type: string
+          example: "Публикация"
+        text:
+          type: string
+          example: "Моя первая публикация"
+        tags:
+          type: string
+          example: "java"
+        likes:
+          type: integer
+
+          example: "1000000"

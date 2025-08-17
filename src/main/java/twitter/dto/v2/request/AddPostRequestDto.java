@@ -7,9 +7,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class LoginRequestDto {
+public class AddPostRequestDto {
 
-    private String login;
-    private String password;
 
+    private String topic;
+    private String text;
+    private String tags;
 }
