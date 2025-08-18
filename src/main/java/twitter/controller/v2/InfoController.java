@@ -6,4 +6,6 @@ public interface InfoController {
 
     InfoResponseDto info(String username);
 
+    InfoResponseDto infoByLogin(String login);
+
 }

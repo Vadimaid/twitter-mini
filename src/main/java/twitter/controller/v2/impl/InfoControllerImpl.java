@@ -56,4 +56,36 @@ public class InfoControllerImpl implements InfoController {
             throw new TwitterCommonException(ex.getMessage());
         }
     }
+
+    @Override
+    public InfoResponseDto infoByLogin(String login){
+        if (Objects.isNull(login) || login.isBlank()) {
+            throw new TwitterCommonException("Некорректный логин");
+        }
+        try {
+            User user = this.userService.getUserByLogin(login);
+            InfoResponseDto responseDto = new InfoResponseDto();
+            responseDto.setId(user.getId());
+            responseDto.setLogin(user.getLogin());
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            if (UserType.PERSON.equals(user.getUserType())) {
+                Person person = (Person) user;
+                responseDto.setFirstName(person.getName());
+                responseDto.setLastName(person.getSurname());
+                responseDto.setDateOfBirth(person.getBirthDate().format(formatter));
+            }
+
+            if (UserType.ORGANIZATION.equals(user.getUserType())) {
+                Organization organization = (Organization) user;
+                responseDto.setTitle(organization.getTitle());
+                responseDto.setOccupation(organization.getOccupation());
+                responseDto.setDateOfFoundation(organization.getDateOfFoundation().format(formatter));
+            }
+
+            return responseDto;
+        } catch (UserNotFoundException ex) {
+            throw new TwitterCommonException(ex.getMessage());
+        }
+    }
 }
