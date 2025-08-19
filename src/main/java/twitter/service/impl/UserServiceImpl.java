@@ -1,5 +1,6 @@
 package twitter.service.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.dao.UserDAO;
@@ -17,12 +18,14 @@ import java.util.Objects;
 public class UserServiceImpl implements UserService {
     
     private final UserDAO userDAO;
+    private final PasswordEncoder passwordEncoder;
 
     @Injection
     public UserServiceImpl(
-            UserDAO userDAO
+            UserDAO userDAO, PasswordEncoder passwordEncoder
     ) {
         this.userDAO = userDAO;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -37,6 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userDAO.saveNewUser(user);
     }
 
