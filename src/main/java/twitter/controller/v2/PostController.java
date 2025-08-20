@@ -1,6 +1,6 @@
 package twitter.controller.v2;
 
-import twitter.dto.v1.PostResponseDto;
+import twitter.dto.v2.response.PostResponseDto;
 
 import java.util.List;
 

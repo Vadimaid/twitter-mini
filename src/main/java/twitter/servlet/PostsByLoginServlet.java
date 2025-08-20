@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import twitter.configuration.ComponentFactory;
 import twitter.controller.v2.PostController;
-import twitter.dto.v1.PostResponseDto;
+import twitter.dto.v2.response.PostResponseDto;
 import twitter.exception.TwitterCommonException;
 import twitter.security.JwtHandler;
 

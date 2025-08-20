@@ -3,7 +3,7 @@ package twitter.controller.v2.impl;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.controller.v2.PostController;
-import twitter.dto.v1.PostResponseDto;
+import twitter.dto.v2.response.PostResponseDto;
 import twitter.entity.post.Post;
 import twitter.entity.user.User;
 import twitter.exception.TwitterCommonException;
