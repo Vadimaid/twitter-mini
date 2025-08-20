@@ -1,4 +1,4 @@
-package twitter.mapper;
+package twitter.mapper.v1;
 
 import twitter.dto.v1.PostResponseDto;
 import twitter.entity.post.Post;
