@@ -5,7 +5,7 @@ import twitter.entity.post.Post;
 import twitter.entity.user.User;
 import twitter.exception.TwitterCommonException;
 import twitter.exception.UserNotFoundException;
-import twitter.mapper.PostMapper;
+import twitter.mapper.v1.PostMapper;
 import twitter.service.PostService;
 import twitter.service.UserService;
 
