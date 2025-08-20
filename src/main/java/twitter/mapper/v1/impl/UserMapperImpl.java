@@ -1,4 +1,4 @@
-package twitter.mapper.impl;
+package twitter.mapper.v1.impl;
 
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
@@ -6,7 +6,7 @@ import twitter.entity.user.Organization;
 import twitter.entity.user.Person;
 import twitter.entity.user.User;
 import twitter.entity.user.UserType;
-import twitter.mapper.UserMapper;
+import twitter.mapper.v1.UserMapper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
