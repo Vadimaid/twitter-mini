@@ -11,10 +11,9 @@ import twitter.exception.TwitterCommonException;
 import twitter.exception.UserNotFoundException;
 import twitter.service.PostService;
 import twitter.service.UserService;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Component
@@ -65,7 +64,7 @@ public class PostControllerImpl implements PostController {
             responseDto.setAuthor(createdPost.getAuthor().getLogin());
             responseDto.setTopic(createdPost.getTopic());
             responseDto.setText(createdPost.getText());
-            responseDto.setTags(createdPost.getTags());
+            responseDto.setTags(Arrays.toString(createdPost.getTags()));
             responseDto.setCreated_at(createdPost.getCreationDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             return responseDto;
         } catch (UserNotFoundException ex) {

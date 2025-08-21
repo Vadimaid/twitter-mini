@@ -11,7 +11,6 @@ import twitter.dto.v2.request.AddPostRequestDto;
 import twitter.dto.v2.response.AddPostResponseDto;
 import twitter.exception.TwitterCommonException;
 import twitter.security.JwtHandler;
-
 import java.io.IOException;
 
 public class AddPostCommandServlet extends HttpServlet {
