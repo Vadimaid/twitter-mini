@@ -6,8 +6,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import twitter.configuration.ComponentFactory;
-import twitter.controller.v2.impl.MyPostsController;
-import twitter.dto.v1.PostResponseDto;
+import twitter.controller.v2.impl.PostsControllerImpl;
+import twitter.dto.v2.response.PostsResponseDto;
 import twitter.exception.TwitterCommonException;
 import twitter.security.JwtHandler;
 
@@ -27,8 +27,8 @@ public class MyPostsCommandServlet extends HttpServlet {
 
         try {
             String username = jwtHandler.getUsernameFromToken(token);
-            MyPostsController controller = ComponentFactory.getComponent(MyPostsController.class);
-            List<PostResponseDto> response = controller.MyPosts(username);
+            PostsControllerImpl controller = ComponentFactory.getComponent(PostsControllerImpl.class);
+            List<PostsResponseDto> response = controller.myPosts(username);
 
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write(mapper.writeValueAsString(response));
