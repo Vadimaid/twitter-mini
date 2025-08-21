@@ -8,11 +8,7 @@ import twitter.configuration.Injection;
 import twitter.configuration.Value;
 import twitter.filter.TwitterApplicationFilter;
 import twitter.runner.ApplicationRunner;
-import twitter.servlet.HelpCommandServlet;
-import twitter.servlet.InfoCommandServlet;
-import twitter.servlet.LoginCommandServlet;
-import twitter.servlet.RegisterCommandServlet;
-import twitter.servlet.InfoAllCommandServlet;
+import twitter.servlet.*;
 
 @Component
 @Slf4j
@@ -39,6 +35,7 @@ public class JettyServerRunner implements ApplicationRunner {
         context.addServlet(RegisterCommandServlet.class, "/api/register");
         context.addServlet(HelpCommandServlet.class, "/api/help");
         context.addServlet(InfoAllCommandServlet.class, "/api/infoAll");
+        context.addServlet(InfoByLoginCommandServlet.class, "/api/infoByLogin");
 
         try {
             server.start();

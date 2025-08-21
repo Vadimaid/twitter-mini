@@ -44,4 +44,17 @@ public class InfoControllerImpl implements InfoController {
                 .map(httpUserMapper::mapUserToInfoResponseDto)
                 .toList();
     }
+
+    @Override
+    public InfoResponseDto infoByLogin(String login) {
+        if (Objects.isNull(login) || login.isBlank()) {
+            throw new TwitterCommonException("Некорректный логин");
+        }
+        try {
+            User user = this.userService.getUserByLogin(login);
+            return httpUserMapper.mapUserToInfoResponseDto(user);
+        } catch (UserNotFoundException ex) {
+            throw new TwitterCommonException(ex.getMessage());
+        }
+    }
 }
