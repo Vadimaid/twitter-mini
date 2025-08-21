@@ -1,3 +1,4 @@
+ feature/J05-2
 package twitter.runner.impl;
 
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import twitter.servlet.HelpCommandServlet;
 import twitter.servlet.InfoCommandServlet;
 import twitter.servlet.LoginCommandServlet;
 import twitter.servlet.RegisterCommandServlet;
+import twitter.servlet.InfoAllCommandServlet;
 
 @Component
 @Slf4j
@@ -37,9 +39,8 @@ public class JettyServerRunner implements ApplicationRunner {
         context.addServlet(LoginCommandServlet.class, "/api/login");
         context.addServlet(InfoCommandServlet.class, "/api/info");
         context.addServlet(RegisterCommandServlet.class, "/api/register");
+        context.addServlet(InfoAllCommandServlet.class, "/api/infoAll");
         context.addServlet(AddPostCommandServlet.class, "/api/add-post");
-
-
         context.addServlet(HelpCommandServlet.class, "/api/help");
 
         try {
@@ -50,3 +51,6 @@ public class JettyServerRunner implements ApplicationRunner {
         }
     }
 }
+
+
+ develop
