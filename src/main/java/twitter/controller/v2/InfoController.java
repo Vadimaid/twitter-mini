@@ -10,5 +10,7 @@ public interface InfoController {
 
     List<InfoResponseDto> infoAll();
 
+    InfoResponseDto infoByLogin(String login);
+
 
 }
