@@ -12,6 +12,7 @@ import twitter.servlet.HelpCommandServlet;
 import twitter.servlet.InfoCommandServlet;
 import twitter.servlet.LoginCommandServlet;
 import twitter.servlet.RegisterCommandServlet;
+import twitter.servlet.InfoAllCommandServlet;
 
 @Component
 @Slf4j
@@ -37,6 +38,7 @@ public class JettyServerRunner implements ApplicationRunner {
         context.addServlet(InfoCommandServlet.class, "/api/info");
         context.addServlet(RegisterCommandServlet.class, "/api/register");
         context.addServlet(HelpCommandServlet.class, "/api/help");
+        context.addServlet(InfoAllCommandServlet.class, "/api/infoAll");
 
         try {
             server.start();
