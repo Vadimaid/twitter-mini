@@ -1,0 +1,22 @@
+###
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+"login" : "aisanat",
+"password": "12345"
+
+}
+
+###
+
+POST http://localhost:8080/api/add-post
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NTYwNDI1NjMsImV4cCI6MTc1NjA0MzE2Mywic3ViIjoiYWlzYW5hdCJ9.TYk27ny8J6la6liXcln6jde4Kw8NHAciDAR0cn0vc6g
+
+{
+
+"topic" : "hi",
+"text": "hi",
+"tags" : "lol, pr"
+}

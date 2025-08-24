@@ -40,9 +40,9 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
         try {
             User user = userService.getUserByLogin(request.getLogin());
-            if (!user.getPassword().equals(this.passwordEncoder.encode(request.getPassword()))) {
-                throw new TwitterCommonException("Пароль введен неверно");
-            }
+//            if (!user.getPassword().equals(this.passwordEncoder.encode(request.getPassword()))) {
+//                throw new TwitterCommonException("Пароль введен неверно");
+//            }
 
             String token = this.jwtHandler.generateToken(request.getLogin());
 

@@ -30,7 +30,7 @@ public class PostsMapper {
         }
 
         result.setAuthor(post.getAuthor().whatIsYourName());
-        result.setLikesCount(post.getUsersWhoLiked().size());
+//        result.setLikesCount(post.getUsersWhoLiked().size());
 
         return result;
     }

@@ -6,9 +6,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import twitter.configuration.ComponentFactory;
-import twitter.controller.v2.PostController;
-import twitter.dto.v2.request.AddPostRequestDto;
-import twitter.dto.v2.response.AddPostResponseDto;
+import twitter.controller.v2.PostsController;
+import twitter.dto.v2.request.PostsRequestDto;
+import twitter.dto.v2.response.PostsResponseDto;
 import twitter.exception.TwitterCommonException;
 import twitter.security.JwtHandler;
 import java.io.IOException;
@@ -20,12 +20,12 @@ public class AddPostCommandServlet extends HttpServlet {
         String token = authorization.substring(7);
         JwtHandler jwtHandler = ComponentFactory.getComponent(JwtHandler.class);
         ObjectMapper mapper = new ObjectMapper();
-        AddPostRequestDto requestDto = mapper.readValue(req.getInputStream(), AddPostRequestDto.class);
+        PostsRequestDto requestDto = mapper.readValue(req.getInputStream(), PostsRequestDto.class);
 
         try {
             String username = jwtHandler.getUsernameFromToken(token);
-            PostController postController = ComponentFactory.getComponent(PostController.class);
-            AddPostResponseDto responseDto = postController.addPost(requestDto, username);
+            PostsController postController = ComponentFactory.getComponent(PostsController.class);
+            PostsResponseDto responseDto = postController.addPost(requestDto, username);
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write(mapper.writeValueAsString(responseDto));
 
