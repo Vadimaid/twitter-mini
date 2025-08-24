@@ -17,6 +17,7 @@ import jakarta.persistence.Transient;
 import twitter.entity.user.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -44,7 +45,7 @@ public class Post {
     private String tagsAsString;
 
     @ManyToMany(mappedBy = "postsILike", fetch = FetchType.EAGER)
-    private List<User> usersWhoLiked;
+    private List<User> usersWhoLiked = new ArrayList<User>();
 
     @Transient
     private String[] tags;
