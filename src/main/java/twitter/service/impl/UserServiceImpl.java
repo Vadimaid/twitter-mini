@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
                 createdUsers.add(createdUser);
             }
         }
-
+        
         return createdUsers;
     }
 

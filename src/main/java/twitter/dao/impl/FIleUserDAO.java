@@ -1,14 +1,11 @@
 package twitter.dao.impl;
 
-import twitter.configuration.Component;
-import twitter.configuration.Injection;
-import twitter.configuration.Profile;
 import twitter.dao.UserDAO;
 import twitter.entity.user.User;
 import twitter.entity.user.UserType;
 import twitter.exception.UnknownUserTypeException;
 import twitter.exception.UserNotFoundException;
-import twitter.mapper.UserMapper;
+import twitter.mapper.v1.UserMapper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

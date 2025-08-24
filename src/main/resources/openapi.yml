@@ -1,0 +1,131 @@
+openapi: 3.0.3
+info:
+  title: Mini Twitter API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /auth/login:
+    post:
+      summary: Команда login
+      description: Эндпоинт для входа в систему
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequestDto'
+      responses:
+        '200':
+          description: Логин прошел успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponseDto'
+        '400':
+          description: Ошибки в запросе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Непредвиденные ошибки на стороне сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  /api/infoAll:
+    get:
+      summary: Команда infoAll
+      description: Эндпоинт для получения списка всех зарегистрированных пользователей. Требует авторизации.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Список пользователей успешно получен
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InfoResponseDto'
+        '401':
+          description: Отсутствует или неверный токен авторизации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Непредвиденные ошибки на стороне сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+components:
+  schemas:
+    LoginRequestDto:
+      type: object
+      description: Объект для передачи логина и пароля пользователя
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          example: vadim
+          description: Логин пользователя
+        password:
+          type: string
+          format: password
+          example: Secret123
+          description: Пароль пользователя
+    LoginResponseDto:
+      type: object
+      description: Объект содержащий JWT для пользователя
+      properties:
+        token:
+          type: string
+          description: Токен для использования в header "Authorization"
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    InfoResponseDto:
+      type: object
+      description: Объект, содержащий информацию о пользователе
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор пользователя
+        login:
+          type: string
+          description: Логин пользователя
+        firstName:
+          type: string
+          description: Имя пользователя (если тип пользователя - PERSON)
+        lastName:
+          type: string
+          description: Фамилия пользователя (если тип пользователя - PERSON)
+        dateOfBirth:
+          type: string
+          format: date
+          description: Дата рождения пользователя в формате 'dd.MM.yyyy' (если тип пользователя - PERSON)
+        title:
+          type: string
+          description: Название организации (если тип пользователя - ORGANIZATION)
+        occupation:
+          type: string
+          description: Сфера деятельности организации (если тип пользователя - ORGANIZATION)
+        dateOfFoundation:
+          type: string
+          format: date
+          description: Дата основания организации в формате 'dd.MM.yyyy' (если тип пользователя - ORGANIZATION)
+    ErrorMessage:
+      description: Текст ошибки
+      type: object
+      properties:
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
