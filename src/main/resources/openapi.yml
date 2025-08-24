@@ -34,6 +34,67 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
+  /api/infoAll:
+    get:
+      summary: Команда infoAll
+      description: Эндпоинт для получения списка всех зарегистрированных пользователей. Требует авторизации.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Список пользователей успешно получен
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InfoResponseDto'
+        '401':
+          description: Отсутствует или неверный токен авторизации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Непредвиденные ошибки на стороне сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  /api/posts/my-posts:
+    get:
+      summary: Команда my-posts
+      description: Эндпоинт для получения всех постов текущего авторизованного пользователя.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Список постов пользователя успешно получен
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostsResponseDto'
+        '400':
+          description: Ошибка при обработке данных пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '401':
+          description: Отсутствует или неверный токен авторизации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Непредвиденные ошибки на стороне сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
 components:
   schemas:
     LoginRequestDto:
@@ -60,7 +121,62 @@ components:
           type: string
           description: Токен для использования в header "Authorization"
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    InfoResponseDto:
+      type: object
+      description: Объект, содержащий информацию о пользователе
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор пользователя
+        login:
+          type: string
+          description: Логин пользователя
+        firstName:
+          type: string
+          description: Имя пользователя (если тип пользователя - PERSON)
+        lastName:
+          type: string
+          description: Фамилия пользователя (если тип пользователя - PERSON)
+        dateOfBirth:
+          type: string
+          format: date
+          description: Дата рождения пользователя в формате 'dd.MM.yyyy' (если тип пользователя - PERSON)
+        title:
+          type: string
+          description: Название организации (если тип пользователя - ORGANIZATION)
+        occupation:
+          type: string
+          description: Сфера деятельности организации (если тип пользователя - ORGANIZATION)
+        dateOfFoundation:
+          type: string
+          format: date
+          description: Дата основания организации в формате 'dd.MM.yyyy' (если тип пользователя - ORGANIZATION)
+    PostsResponseDto:
+      type: object
+      description: Объект, содержащий данные поста пользователя
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор поста
+        content:
+          type: string
+          description: Содержимое поста
+        createdAt:
+          type: string
+          format: date-time
+          description: Дата и время создания поста
     ErrorMessage:
       description: Текст ошибки
+      type: object
+      properties:
+        errorMessage:
+          type: string
+          description: Сообщение об ошибке
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
       type: string
       example: "Пароль введен неверно"

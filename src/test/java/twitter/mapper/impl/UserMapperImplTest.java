@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import twitter.entity.user.Person;
 import twitter.entity.user.User;
 import twitter.entity.user.UserType;
+import twitter.mapper.v1.impl.UserMapperImpl;
 
 class UserMapperImplTest {
 
