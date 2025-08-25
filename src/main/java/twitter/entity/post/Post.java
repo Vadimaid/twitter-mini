@@ -45,7 +45,7 @@ public class Post {
     private String tagsAsString;
 
     @ManyToMany(mappedBy = "postsILike", fetch = FetchType.EAGER)
-    private List<User> usersWhoLiked = new ArrayList<User>();
+    private List<User> usersWhoLiked;
 
     @Transient
     private String[] tags;
