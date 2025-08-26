@@ -61,10 +61,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
-  /api/posts:
+  /api/posts/by-login:
     get:
       summary: Команда postsByLogin
-      description: Эндпоинт для получения списка всех постов зарегистрированного пользователя. Требует авторизации.
+      description: Эндпоинт для получения списка всех постов пользователя, чей логин мы передали. Требует авторизации.
       security:
         - BearerAuth: [ ]
       responses:
