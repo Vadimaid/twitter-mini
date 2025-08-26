@@ -1,5 +1,4 @@
-package twitter.dto.v2.response;
-
+package twitter.dto.v2.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,12 +7,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PostResponseDto {
+public class PostsRequestDto {
 
     private String author;
-    private String createdAt;
     private String topic;
     private String text;
     private String tags;
-    private Integer likesCount;
+
 }
