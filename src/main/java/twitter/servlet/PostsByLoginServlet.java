@@ -18,17 +18,14 @@ public class PostsByLoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String authorization = req.getHeader("Authorization");
-        String token = authorization.substring(7);
+        String login = req.getParameter("login");
 
-        JwtHandler jwtHandler = ComponentFactory.getComponent(JwtHandler.class);
         ObjectMapper mapper = new ObjectMapper();
         try {
-            String username = jwtHandler.getUsernameFromToken(token);
             PostController postController = ComponentFactory.getComponent(PostController.class);
-            List<PostResponseDto> responseDto = postController.postsByLogin(username);
+            List<PostResponseDto> responseDtoS = postController.postsByLogin(login);
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().write(mapper.writeValueAsString(responseDto));
+            resp.getWriter().write(mapper.writeValueAsString(responseDtoS));
         } catch (TwitterCommonException ex) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write(mapper.writeValueAsString(ex.getMessage()));
