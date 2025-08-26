@@ -40,7 +40,7 @@ public class JettyServerRunner implements ApplicationRunner {
         context.addServlet(RegisterCommandServlet.class, "/api/register");
         context.addServlet(HelpCommandServlet.class, "/api/help");
         context.addServlet(InfoAllCommandServlet.class, "/api/infoAll");
-        context.addServlet(PostsByLoginServlet.class, "/api/posts");
+        context.addServlet(PostsByLoginServlet.class, "/api/posts/by-login");
 
         try {
             server.start();

@@ -9,7 +9,6 @@ import twitter.configuration.ComponentFactory;
 import twitter.controller.v2.PostController;
 import twitter.dto.v2.response.PostResponseDto;
 import twitter.exception.TwitterCommonException;
-import twitter.security.JwtHandler;
 
 import java.io.IOException;
 import java.util.List;
