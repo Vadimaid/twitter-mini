@@ -10,10 +10,11 @@ import twitter.filter.TwitterApplicationFilter;
 import twitter.runner.ApplicationRunner;
 import twitter.servlet.AddPostCommandServlet;
 import twitter.servlet.HelpCommandServlet;
+import twitter.servlet.InfoAllCommandServlet;
 import twitter.servlet.InfoCommandServlet;
 import twitter.servlet.LoginCommandServlet;
+import twitter.servlet.PostsByLoginServlet;
 import twitter.servlet.RegisterCommandServlet;
-import twitter.servlet.InfoAllCommandServlet;
 import twitter.servlet.InfoByLoginCommandServlet;
 
 import twitter.servlet.*;
@@ -46,6 +47,7 @@ public class JettyServerRunner implements ApplicationRunner {
         context.addServlet(InfoAllCommandServlet.class, "/api/infoAll");
         context.addServlet(InfoByLoginCommandServlet.class, "/api/infoByLogin");
         context.addServlet(MyPostsCommandServlet.class, "/api/posts/my-posts");
+        context.addServlet(PostsByLoginServlet.class, "/api/posts/by-login");
 
         try {
             server.start();

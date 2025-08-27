@@ -94,7 +94,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
-
+  /api/posts/by-login:
+    get:
+      summary: Команда postsByLogin
+      description: Эндпоинт для получения списка всех постов пользователя, чей логин мы передали. Требует авторизации.
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Список всех постов пользователя успешно получен
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostsResponseDto'
+        '400':
+          description: Ошибка при обработке данных пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '401':
+          description: Отсутствует или неверный токен авторизации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Непредвиденные ошибки на стороне сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
 components:
   schemas:
     LoginRequestDto:

@@ -3,7 +3,6 @@ package twitter.controller.v2.impl;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.controller.v2.PostsController;
-import twitter.dto.v1.PostResponseDto;
 import twitter.dto.v2.request.PostsRequestDto;
 import twitter.dto.v2.response.PostsResponseDto;
 import twitter.entity.post.Post;
@@ -14,6 +13,7 @@ import twitter.mapper.v2.impl.PostsMapper;
 import twitter.service.PostService;
 import twitter.service.UserService;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -105,7 +105,26 @@ public class PostsControllerImpl implements PostsController {
 
     @Override
     public List<PostsResponseDto> postByUsername(String username) {
-        return List.of();
+        if (Objects.isNull(username) || username.isBlank()) {
+            throw new TwitterCommonException("Некорректные данные пользователя");
+        }
+
+        try {
+            User user = this.userService.getUserByLogin(username);
+
+            List<PostsResponseDto> responseDtoS = new ArrayList<>();
+            List<Post> posts = this.postService.getAllPostsByUser(user);
+            for (Post post : posts) {
+                PostsResponseDto responseDto = this.postMapper.mapForDto(post);
+
+                responseDtoS.add(responseDto);
+            }
+
+            return responseDtoS;
+
+        } catch (UserNotFoundException ex) {
+            throw new TwitterCommonException(ex.getMessage());
+        }
     }
 
     @Override
