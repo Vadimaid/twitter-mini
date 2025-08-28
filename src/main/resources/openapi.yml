@@ -127,6 +127,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
+  /api/posts/by-tag:
+    get:
+      summary: Команда postsByTag
+      description: Эндпоинт для получения списка постов по тегу. Требует авторизации.
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - in: query
+          name: tag
+          required: true
+          schema:
+            type: string
+          description: Тег для поиска постов
+      responses:
+        '200':
+          description: Список постов успешно получен
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostsResponseDto'
+        '400':
+          description: Ошибка при обработке данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '401':
+          description: Отсутствует или неверный токен авторизации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Непредвиденные ошибки на стороне сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
 components:
   schemas:
     LoginRequestDto:
