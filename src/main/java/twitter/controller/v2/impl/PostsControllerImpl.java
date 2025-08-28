@@ -99,8 +99,23 @@ public class PostsControllerImpl implements PostsController {
     }
 
     @Override
-    public List<PostsResponseDto> postByTag(String username, String tag) {
-        return List.of();
+    public List<PostsResponseDto> postByTag(String tag) {
+        if (Objects.isNull(tag) || tag.trim().isEmpty()) {
+            throw new TwitterCommonException("Тег публикации не может быть пустым");
+        }
+
+        List<Post> posts = postService.getAllPostsByTag(tag);
+        List<PostsResponseDto> result = new ArrayList<>();
+
+        for (Post post : posts) {
+            try {
+                result.add(postMapper.mapForDto(post));
+            } catch (Exception e) {
+                throw new TwitterCommonException("Ошибка при преобразовании поста: " + e.getMessage());
+            }
+        }
+
+        return result;
     }
 
     @Override
