@@ -20,7 +20,7 @@ import java.util.List;
 
 //@Component
 public class PostControllerImpl implements PostController {
-    
+
     private final PostService postService;
     private final SecurityComponent securityComponent;
     private final PostMapper postMapper;

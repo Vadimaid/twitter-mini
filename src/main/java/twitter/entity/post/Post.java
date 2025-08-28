@@ -17,6 +17,7 @@ import jakarta.persistence.Transient;
 import twitter.entity.user.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
