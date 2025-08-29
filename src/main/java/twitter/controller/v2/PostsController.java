@@ -11,6 +11,7 @@ public interface PostsController {
 
     PostsResponseDto addPost(PostsRequestDto request, String username);
     List<PostsResponseDto> myPosts(String username);
+    List<PostsResponseDto> allPosts();
     List<PostsResponseDto> postByTag(String username, String tag);
     List<PostsResponseDto> postByUsername(String username);
     List<PostsResponseDto> postByUserType(String username);

@@ -3,6 +3,8 @@ package twitter.controller.v2.impl;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.controller.v2.PostsController;
+import twitter.dao.PostDAO;
+import twitter.dto.v1.PostResponseDto;
 import twitter.dto.v2.request.PostsRequestDto;
 import twitter.dto.v2.response.PostsResponseDto;
 import twitter.entity.post.Post;
@@ -26,7 +28,7 @@ public class PostsControllerImpl implements PostsController {
     private final UserService userService;
 
     @Injection
-    public PostsControllerImpl(PostsMapper postMapper, PostService postService, UserService userService) {
+    public PostsControllerImpl(PostsMapper postMapper, PostService postService, UserService userService, PostDAO postDAO) {
         this.postMapper = postMapper;
         this.postService = postService;
         this.userService = userService;
@@ -96,6 +98,19 @@ public class PostsControllerImpl implements PostsController {
         } catch (UserNotFoundException ex) {
             throw new TwitterCommonException(ex.getMessage());
         }
+    }
+
+    @Override
+    public List<PostsResponseDto> allPosts() {
+        return postService.getAllPosts().stream()
+                .map(post -> {
+                    try {
+                        return postMapper.mapForDto(post);
+                    } catch (Exception ex) {
+                        throw new TwitterCommonException(ex.getMessage());
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
