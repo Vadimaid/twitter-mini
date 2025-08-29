@@ -83,4 +83,9 @@ public class PostServiceImpl implements PostService {
 
         return posts;
     }
+
+    @Override
+    public List<User> getPostLikesUsers(int postId) {
+        return postDAO.getPostById(postId).getUsersWhoLiked();
+    }
 }

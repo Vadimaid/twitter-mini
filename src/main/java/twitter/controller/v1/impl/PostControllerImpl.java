@@ -7,7 +7,7 @@ import twitter.entity.user.User;
 import twitter.exception.TwitterUploadException;
 import twitter.exception.UnknownUserTypeException;
 import twitter.exception.UserNotFoundException;
-import twitter.mapper.PostMapper;
+import twitter.mapper.v1.PostMapper;
 import twitter.security.SecurityComponent;
 import twitter.service.FileUploadService;
 import twitter.service.PostService;
@@ -20,7 +20,7 @@ import java.util.List;
 
 //@Component
 public class PostControllerImpl implements PostController {
-    
+
     private final PostService postService;
     private final SecurityComponent securityComponent;
     private final PostMapper postMapper;

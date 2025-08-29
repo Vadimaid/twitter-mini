@@ -101,4 +101,16 @@ public class DBPostDAO implements PostDAO {
             throw new TwitterCommonException(ex.getMessage());
         }
     }
+
+    @Override
+    public Post getPostById(int postId) {
+        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            return entityManager
+                    .createQuery("select p from Post p where p.id = :postId", Post.class)
+                    .setParameter("postId", postId)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            throw new TwitterCommonException(ex.getMessage());
+        }
+    }
 }

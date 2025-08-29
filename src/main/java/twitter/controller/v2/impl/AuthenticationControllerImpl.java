@@ -1,5 +1,6 @@
 package twitter.controller.v2.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import twitter.configuration.Component;
 import twitter.configuration.Injection;
 import twitter.controller.v2.AuthenticationController;
@@ -18,11 +19,13 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
     private final UserService userService;
     private final JwtHandler jwtHandler;
+    private final PasswordEncoder passwordEncoder;
 
     @Injection
-    public AuthenticationControllerImpl(UserService userService, JwtHandler jwtHandler) {
+    public AuthenticationControllerImpl(UserService userService, JwtHandler jwtHandler, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.jwtHandler = jwtHandler;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -37,7 +40,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
         try {
             User user = userService.getUserByLogin(request.getLogin());
-            if (!user.getPassword().equals(request.getPassword())) {
+            if (!user.getPassword().equals(this.passwordEncoder.encode(request.getPassword()))) {
                 throw new TwitterCommonException("Пароль введен неверно");
             }
 

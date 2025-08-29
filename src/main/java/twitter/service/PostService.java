@@ -20,4 +20,6 @@ public interface PostService {
 
    List<Post> createSeveralPosts(List<Post> posts);
 
+   List<User> getPostLikesUsers(int postId);
+
 }
