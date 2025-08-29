@@ -12,5 +12,6 @@ public interface PostDAO {
     List<Post> getAllPostsByUser(int userId);
     List<Post> getAllPostsByTag(String tag);
     List<Post> getAllPostsByUserIdIn(int[] userIds);
+    Post getPostById(int postId);
 
 }

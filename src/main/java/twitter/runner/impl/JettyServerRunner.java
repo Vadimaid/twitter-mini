@@ -48,6 +48,7 @@ public class JettyServerRunner implements ApplicationRunner {
         context.addServlet(InfoByLoginCommandServlet.class, "/api/infoByLogin");
         context.addServlet(MyPostsCommandServlet.class, "/api/posts/my-posts");
         context.addServlet(PostsByLoginServlet.class, "/api/posts/by-login");
+        context.addServlet(PostLikesUsersCommandServlet.class, "/api/posts/likes-users");
 
         try {
             server.start();

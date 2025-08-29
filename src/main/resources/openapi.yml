@@ -127,6 +127,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
+  /api/posts/likes-users:
+    get:
+      summary: Команда post_likes_users
+      description: Эндпоинт для получения информации о пользователях, поставивших лайк
+      parameters:
+        - in: query
+          name: post_id
+          required: true
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Успешно получен список всех пользователей, лайкнувших пост
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InfoResponseDto'
+        '401':
+          description: Отсутствует или неверный токен авторизации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Непредвиденные ошибки на стороне сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
 components:
   schemas:
     LoginRequestDto:

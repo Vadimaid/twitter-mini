@@ -5,11 +5,13 @@ import twitter.configuration.Injection;
 import twitter.controller.v2.PostsController;
 import twitter.dto.v2.request.PostsRequestDto;
 import twitter.dto.v2.response.PostsResponseDto;
+import twitter.dto.v2.response.InfoResponseDto;
 import twitter.entity.post.Post;
 import twitter.entity.user.User;
 import twitter.exception.TwitterCommonException;
 import twitter.exception.UserNotFoundException;
 import twitter.mapper.v2.impl.PostsMapper;
+import twitter.mapper.v2.HttpUserMapper;
 import twitter.service.PostService;
 import twitter.service.UserService;
 import java.time.LocalDateTime;
@@ -24,12 +26,14 @@ public class PostsControllerImpl implements PostsController {
     private final PostsMapper postMapper;
     private final PostService postService;
     private final UserService userService;
+    private final HttpUserMapper httpUserMapper;
 
     @Injection
-    public PostsControllerImpl(PostsMapper postMapper, PostService postService, UserService userService) {
+    public PostsControllerImpl(PostsMapper postMapper, PostService postService, UserService userService, HttpUserMapper httpUserMapper) {
         this.postMapper = postMapper;
         this.postService = postService;
         this.userService = userService;
+        this.httpUserMapper = httpUserMapper;
     }
 
     @Override
@@ -130,5 +134,14 @@ public class PostsControllerImpl implements PostsController {
     @Override
     public List<PostsResponseDto> postByUserType(String username) {
         return List.of();
+    }
+
+    @Override
+    public List<InfoResponseDto> getPostUsersLikes(int postId) {
+        return postService
+                .getPostLikesUsers(postId)
+                .stream()
+                .map(httpUserMapper::mapUserToInfoResponseDto)
+                .collect(Collectors.toList());
     }
 }
